@@ -1,3 +1,4 @@
+import { PatchOperation } from "@azure/cosmos";
 import {
   app,
   HttpRequest,
@@ -6,29 +7,36 @@ import {
 } from "@azure/functions";
 import { dbClient } from "../database";
 
+type UpdateTaskBody = {
+  properties: Array<{
+    name: string;
+    label: string;
+    fieldType: string;
+    value: any;
+  }>;
+};
+
 export async function UpdateTask(
   request: HttpRequest,
   context: InvocationContext
 ): Promise<HttpResponseInit> {
-  const body = (await request.json()) as object;
+  const body = (await request.json()) as UpdateTaskBody;
   const taskId = request.query.get("id");
   const organizationId = request.query.get("organizationId");
 
-  let patchRequests = [];
-
-  for (let key in body) {
-    patchRequests.push({
+  const patchRequest: PatchOperation[] = [
+    {
       op: "replace",
-      path: `/${key}`,
-      value: body[key],
-    });
-  }
+      path: "/properties",
+      value: body.properties,
+    },
+  ];
 
   const createdTask = await dbClient
     .database("TaskApp")
     .container("Tasks")
     .item(taskId, organizationId)
-    .patch(patchRequests);
+    .patch(patchRequest);
 
   return { jsonBody: createdTask.resource, status: 200 };
 }

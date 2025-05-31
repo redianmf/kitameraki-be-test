@@ -7,14 +7,15 @@
     "watch": "tsc -w",
     "clean": "rimraf dist",
     "prestart": "npm run clean && npm run build",
-    "start": "func start",
+    "start": "func start --verbose",
     "dev": "npm run prestart && npm start",
     "test": "echo \"No tests yet...\""
   },
   "dependencies": {
     "@azure/cosmos": "^4.0.0",
     "@azure/functions": "^4.0.0",
-    "dotenv": "^16.5.0"
+    "dotenv": "^16.5.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/node": "^20.x",

@@ -6,4 +6,5 @@
 
 ### Run Project
 
-`npm run dev`
+- Copy .env.example to .env
+- `npm run dev`
